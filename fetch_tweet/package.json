@@ -1,0 +1,14 @@
+{
+  "name": "fetch_tweet",
+  "version": "1.0.0",
+  "description": "Fetches tweets from twitter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Prashanth Subrahmanyam",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/secret-manager": "^4.0.0"
+  }
+}
