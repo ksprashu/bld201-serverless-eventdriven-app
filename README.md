@@ -1,2 +1,2 @@
-# serverless_eventapp_leaderboard
+# Serverless Event Based App
 Leaderboard App
