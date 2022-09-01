@@ -30,7 +30,7 @@ app.listen(port, () => {
 /**
  * Main function
  */
-async function start_run() {
+async function fetchTweetsAndSave() {
     console.log('Starting new run');
     let newestId = await firestore.getMostRecentTweetId();
     let response = await twitter.getWordleTweets(newestId);
@@ -43,8 +43,8 @@ async function start_run() {
 }
 
 app.get('/', (req, res) => {
-    start_run();
+    fetchTweetsAndSave();
     res.send(`Tweet fetch process triggered!`);
-  });
+});
 
 
