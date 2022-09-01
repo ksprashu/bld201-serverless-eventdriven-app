@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const firestore = require('./firestore');
-const storage = require('./storage');
-const twitter = require('./twitter');
+const firestore = require('./app/firestore');
+const storage = require('./app/storage');
+const twitter = require('./app/twitter');
 
 require('dotenv').config();
 

@@ -4,11 +4,11 @@
   "description": "Fetches tweets from twitter",
   "main": "index.js",
   "scripts": {
-    "start": "node app/index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Prashanth Subrahmanyam",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/firestore": "^6.0.0",
     "@google-cloud/secret-manager": "^4.0.0",
