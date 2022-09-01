@@ -18,6 +18,15 @@ const twitter = require('./app/twitter');
 
 require('dotenv').config();
 
+// Running express listener as required by cloud run contract
+const express = require('express');
+const app = express();
+
+const port = parseInt(process.env.PORT) || 8080;
+app.listen(port, () => {
+  console.log(`helloworld: listening on port ${port}`);
+});
+
 /**
  * Main function
  */
@@ -33,4 +42,9 @@ async function start_run() {
     console.log('Run complete');
 }
 
-start_run();
+app.get('/', (req, res) => {
+    start_run();
+    res.send(`Tweet fetch process triggered!`);
+  });
+
+
