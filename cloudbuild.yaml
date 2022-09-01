@@ -8,6 +8,6 @@ steps:
 # Deploy container image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['run', 'deploy', 'fetch-tweets', '--image', 'gcr.io/$PROJECT_ID/fetch_tweets', '--region', 'REGION']
+  args: ['run', 'deploy', 'fetch-tweets', '--image', 'gcr.io/$PROJECT_ID/fetch_tweets', '--region', 'us-west1']
 images:
 - gcr.io/$PROJECT_ID/fetch_tweets
