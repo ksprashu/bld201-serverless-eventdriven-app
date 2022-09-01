@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+require('dotenv').config();
+
 const firestore = require('./app/firestore');
 const storage = require('./app/storage');
 const twitter = require('./app/twitter');
 
-require('dotenv').config();
-
-// Running express listener as required by cloud run contract
 const express = require('express');
 const app = express();
-
-const port = parseInt(process.env.PORT) || 8080;
-app.listen(port, () => {
-  console.log(`helloworld: listening on port ${port}`);
-});
 
 /**
  * Main function
@@ -41,6 +35,12 @@ async function fetchTweetsAndSave() {
     }
     console.log('Run complete');
 }
+
+// Running express listener as required by cloud run contract
+const port = parseInt(process.env.PORT) || 8080;
+app.listen(port, () => {
+  console.log(`helloworld: listening on port ${port}`);
+});
 
 app.get('/', (req, res) => {
     fetchTweetsAndSave();
