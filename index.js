@@ -43,8 +43,12 @@ app.listen(port, () => {
 });
 
 app.get('/', (req, res) => {
+    res.status(200).json({'message': 'server running'});
+});
+
+app.post('/', (req, res) => {
     fetchTweetsAndSave();
-    res.send(`Tweet fetch process triggered!`);
+    res.status(201).json({'message': 'request started'});
 });
 
 
