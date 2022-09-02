@@ -27,7 +27,7 @@ async function saveTweets(tweets) {
     try {
         let filename = [TWEET_FILE_PREFIX, Date.now().toString()].join('-');
         filename += '.json';
-        let bucketname = [process.env['GOOGLE_CLOUD_PROJECT'], TWEET_FILE_PREFIX].join('_');
+        let bucketname = [process.env['PROJECT_ID'], TWEET_FILE_PREFIX].join('_');
         let data = JSON.stringify(tweets);
         await storage.bucket(bucketname).file(filename).save(data);
         console.log('Tweets saved');
@@ -45,7 +45,7 @@ async function saveUsers(users) {
     try {
         let filename = [USER_FILE_PREFIX, Date.now().toString()].join('-');
         filename += '.json';
-        let bucketname = [process.env['GOOGLE_CLOUD_PROJECT'], USER_FILE_PREFIX].join('_');
+        let bucketname = [process.env['PROJECT_ID'], USER_FILE_PREFIX].join('_');
         let data = JSON.stringify(users);
         await storage.bucket(bucketname).file(filename).save(data);
         console.log('Users saved');

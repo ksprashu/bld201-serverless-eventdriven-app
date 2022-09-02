@@ -39,7 +39,7 @@ async function fetchTweetsAndSave() {
 // Running express listener as required by cloud run contract
 const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
-  console.log(`helloworld: listening on port ${port}`);
+  console.log(`listening on port ${port}`);
 });
 
 app.get('/', (req, res) => {
