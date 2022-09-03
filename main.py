@@ -18,6 +18,7 @@ import functions_framework
 import json
 
 from google.cloud import storage
+from google.cloud import firestore
 
 
 @functions_framework.cloud_event
@@ -44,12 +45,23 @@ def store_usernames(bucket_name, filename):
         bucket_name (str): Name of the bucket in which the object is created
         filename (str): Name of the file object
     """
-    
+
+    # initialize cloud storage client
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(filename)
     usernames = json.loads(blob.download_as_bytes())
 
+    # initialize firestore client
+    db = firestore.Client()
+    collection_ref = db.collection(u'users')
+
+    print("Updating user entries in firestore")
+
     # usernames will be a map of id: username
     for userid, username in usernames.items():
-        print(f"{userid} : {username}")
+        collection_ref.document(str(userid)).set({
+            u'userid': userid,
+            u'username': username
+        })
+
