@@ -140,6 +140,7 @@ async function _searchRecentTweets(bearerToken, sinceId = null, nextToken = null
 
 /**
  * Check that the tweets have the required template for wordle scores 
+ * The format is expected to be "Wordle ddd d/6"
  * @param {Array} tweets 
  * @returns {Array} list of filtered tweets
  */
