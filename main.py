@@ -64,4 +64,3 @@ def store_usernames(bucket_name, filename):
             u'userid': userid,
             u'username': username
         })
-
