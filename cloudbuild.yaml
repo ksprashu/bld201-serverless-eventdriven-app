@@ -4,6 +4,7 @@ steps:
   entrypoint: gcloud
   args: ['functions', 'deploy', 'store-usernames', 
     '--gen2',
+    '--trigger-http',    
     '--runtime', 'python310',
     '--region', 'us-west1', 
     '--source', '.',
