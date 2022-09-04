@@ -4,7 +4,7 @@ steps:
   entrypoint: gcloud
   args: ['functions', 'deploy', 'store-tweet-scores', 
     '--gen2',
-    '--trigger-event-filters', 'type=google.cloud.storage.object.v1.finalized',
+    '--trigger-http',
     '--runtime', 'python310',
     '--region', 'us-west1', 
     '--source', '.',
