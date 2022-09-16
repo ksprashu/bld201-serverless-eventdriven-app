@@ -52,7 +52,7 @@ async function updateMostRecentTweetId(metadata) {
     
     try {
         // create a doc with 'timestamp' for recording history
-        await firestore.collection(METADATA_COLLECTION).doc(data.timestamp.toString()).set(data);
+        // await firestore.collection(METADATA_COLLECTION).doc(data.timestamp.toString()).set(data);
         // create a document called 'latest' for faster fetch
         await firestore.collection(METADATA_COLLECTION).doc(LATEST_DOCID).set(data);       
         console.log('Saved tweet metadata');
