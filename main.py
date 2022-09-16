@@ -107,7 +107,7 @@ def write_or_update_score(coll_ref, score_doc):
     """
 
     score_docs = coll_ref.where(u'round_id', u'==', score_doc['round_id']) \
-        .where(u'author_id'), u'==', score_doc['author_id'].get()
+        .where(u'author_id', u'==', score_doc['author_id']).get()
 
     if len(score_docs) == 0:
         coll_ref.add(score_doc)
