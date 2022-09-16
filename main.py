@@ -48,6 +48,8 @@ def store_scores(bucket_name, filename):
         filename (str): Name of the file object
     """
 
+    print("Initializing clients to save scores")
+
     # initialize cloud storage client
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
@@ -58,7 +60,7 @@ def store_scores(bucket_name, filename):
     db = firestore.Client()
     collection_ref = db.collection(u'wordle_scores')
 
-    print("Calculating scores")
+    print("Calculating and saving scores")
     
     # each entry will have a tweetId, authorId, and tweet
     for entry in tweets:
@@ -73,13 +75,14 @@ def store_scores(bucket_name, filename):
             round_id = terms[1]
             attempts = terms[2].split('/')[1]
             score = calculate_score(attempts)
-
-            collection_ref.add({
+            score_doc = {
                 u'round_id': round_id,
                 u'author_id': author_id,
                 u'score': score,
                 u'tweet_id': tweet_id
-            })
+            }
+            write_or_update_score(collection_ref, score_doc)
+            collection_ref.add()
 
         except ValueError as e:
             print(e)
@@ -87,6 +90,38 @@ def store_scores(bucket_name, filename):
             print(f"Encountered error {e}")
 
     print("Saved scores to Firestore")
+
+
+def write_or_update_score(coll_ref, score_doc):
+    """
+    Update the user's score for the given round if already present, or 
+    create a new score entry for a new round. A user should have only 1 score
+    per round. We will default to the lowest score (highest attempts).
+
+    Parameters:
+        coll_ref (Object): An instance of the score collection in Firestore
+        score_doc (Object): A dictionary of score, round_id, author_id, tweet_id
+
+    Return:
+        Boolean indicating success or failure 
+    """
+
+    score_docs = coll_ref.where(u'round_id', u'==', score_doc['round_id']) \
+        .where(u'author_id'), u'==', score_doc['author_id'].get()
+
+    if len(score_docs) == 0:
+        coll_ref.add(score_doc)
+        print(f"Wrote new entry for author = {score_doc['author_id']} \
+            for round {score_doc['round_id']}")
+    elif len(score_docs) > 1:
+        raise ValueError(f'Found {len(score_docs)} entries \
+            for round - {score_doc["round_id"]} \
+            for player - {score_doc["author_id"]}')
+    else:
+        # update the scores for this record
+        old_score_doc = score_docs[0]
+        coll_ref.document(old_score_doc.id).set(score_doc)
+        print(f"Updated existing entry with id {old_score_doc.id}")
 
 
 def calculate_score(attempts):
