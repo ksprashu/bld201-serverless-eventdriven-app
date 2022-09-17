@@ -100,7 +100,7 @@ async function _searchRecentTweets(bearerToken, sinceId = null, nextToken = null
     let params = {
         'query': SEARCH_TERM,
         'expansions': 'author_id',
-        'user.fields': 'username',
+        'user.fields': 'username, profile_image_url',
         'sort_order': 'recency',
         'max_results': process.env.TWITTER_API_MAX_RESULTS
     };
