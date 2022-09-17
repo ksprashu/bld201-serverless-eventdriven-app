@@ -2,7 +2,7 @@ steps:
 # Deploy to Cloud Functions 2nd Gen
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['functions', 'deploy', 'store-tweet-scores', 
+  args: ['functions', 'deploy', 'store-scores', 
     '--gen2',
     '--trigger-http',
     '--runtime', 'python310',
