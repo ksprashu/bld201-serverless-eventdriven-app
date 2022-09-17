@@ -62,9 +62,9 @@ def store_usernames(bucket_name, filename):
     for userid, userdata in usernames.items():
         user_doc = {
             u'userid': str(userid),
-            u'username': str(userdata.username),
-            u'name': str(userdata.name),
-            u'profile_image_url': str(userdata.profile_image_url)
+            u'username': str(userdata['username']),
+            u'name': str(userdata['name']),
+            u'profile_image_url': str(userdata['profile_image_url'])
         }
 
         check_and_update_userdata(collection_ref, user_doc)           
