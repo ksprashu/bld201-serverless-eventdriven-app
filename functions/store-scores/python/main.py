@@ -64,22 +64,22 @@ def store_scores(bucket_name, filename):
     
     # each entry will have a tweetId, authorId, and tweet
     for entry in tweets:
-        tweet_id = entry['tweetId']
-        author_id = entry['authorId']
+        tweetid = entry['tweetId']
+        userid = entry['authorId']
         tweet = entry['tweet']
 
         tweet = tweet.lower()
         terms = tweet.split(' ')
 
         try:
-            round_id = terms[1]
+            roundid = terms[1]
             attempts = terms[2].split('/')[1]
             score = calculate_score(attempts)
             score_doc = {
-                u'round_id': round_id,
-                u'author_id': author_id,
+                u'roundid': roundid,
+                u'userid': userid,
                 u'score': score,
-                u'tweet_id': tweet_id
+                u'tweetid': tweetid
             }
             write_or_update_score(collection_ref, score_doc)
 
@@ -99,27 +99,27 @@ def write_or_update_score(coll_ref, score_doc):
 
     Parameters:
         coll_ref (Object): An instance of the score collection in Firestore
-        score_doc (Object): A dictionary of score, round_id, author_id, tweet_id
+        score_doc (Object): A dictionary of score, roundid, userid, tweetid
 
     Return:
         Boolean indicating success or failure 
     """
 
-    score_docs = coll_ref.where(u'round_id', u'==', score_doc['round_id']) \
-        .where(u'author_id', u'==', score_doc['author_id']).get()
+    score_docs = coll_ref.where(u'roundid', u'==', score_doc['roundid']) \
+        .where(u'userid', u'==', score_doc['userid']).get()
 
     if len(score_docs) == 0:
         coll_ref.add(score_doc)
-        print(f"Wrote new entry for author = {score_doc['author_id']} \
-            for round {score_doc['round_id']}")
+        print(f"Wrote new entry for author = {score_doc['userid']} \
+            for round {score_doc['roundid']}")
     elif len(score_docs) > 1:
         raise ValueError(f'Found {len(score_docs)} entries \
-            for round - {score_doc["round_id"]} \
-            for player - {score_doc["author_id"]}')
+            for round - {score_doc["roundid"]} \
+            for player - {score_doc["userid"]}')
     else:
         # update the scores for this record
-        print(f"Score exists for author {score_doc['author_id']} \
-            for round {score_doc['round_id']}")
+        print(f"Score exists for author {score_doc['userid']} \
+            for round {score_doc['roundid']}")
         old_score_doc = score_docs[0]
         coll_ref.document(old_score_doc.id).set(score_doc)
         print(f"Updated existing entry with id {old_score_doc.id}")
