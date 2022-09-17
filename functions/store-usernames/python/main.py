@@ -60,10 +60,31 @@ def store_usernames(bucket_name, filename):
 
     # usernames will be a map of id: username
     for userid, username, profile_image_url in usernames.items():
-        collection_ref.document(str(userid)).set({
-            u'userid': userid,
-            u'username': username,
-            u'profile_image_url': profile_image_url
-        })
+        user_doc = {
+            u'userid': str(userid),
+            u'username': str(username),
+            u'profile_image_url': str(profile_image_url)
+        }
+
+        check_and_update_userdata(collection_ref, user_doc)           
 
     print("User data updated")
+
+
+def check_and_update_userdata(coll_ref, user_doc):
+    """
+    Checks whether the user data need to be updated and inserts / updates.
+
+    Parameters:
+        coll_ref (Object): Reference to users collection
+        user_doc (Object): The user data that needs to be updated
+    """
+
+    doc = coll_ref.document(user_doc['userid']).get()
+    if not doc.exists or \
+        doc['username'] != user_doc['username'] or \
+        not hasattr(doc, u'profile_image_url') or \
+        doc['profile_image_url'] != user_doc['profile_image_url']:
+        
+        coll_ref.document(user_doc['userid']).set(user_doc)
+        print(f"user {user_doc['userid']} created or updated")
