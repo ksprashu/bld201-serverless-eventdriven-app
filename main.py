@@ -82,7 +82,6 @@ def store_scores(bucket_name, filename):
                 u'tweet_id': tweet_id
             }
             write_or_update_score(collection_ref, score_doc)
-            collection_ref.add()
 
         except ValueError as e:
             print(e)
@@ -119,6 +118,8 @@ def write_or_update_score(coll_ref, score_doc):
             for player - {score_doc["author_id"]}')
     else:
         # update the scores for this record
+        print(f"Score exists for author {score_doc['author_id']} \
+            for round {score_doc['round_id']}")
         old_score_doc = score_docs[0]
         coll_ref.document(old_score_doc.id).set(score_doc)
         print(f"Updated existing entry with id {old_score_doc.id}")
