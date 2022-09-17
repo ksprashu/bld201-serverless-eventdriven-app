@@ -60,6 +60,7 @@ def store_usernames(bucket_name, filename):
 
     # usernames will be a map of id: username
     for userid, userdata in usernames.items():
+        userdata = userdata.to_dict()
         user_doc = {
             u'userid': str(userid),
             u'username': str(userdata['username']),
