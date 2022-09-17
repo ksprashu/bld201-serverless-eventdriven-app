@@ -1,7 +1,7 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets', '.']
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets', 'services/fetch-tweets/nodejs/.']
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets']
