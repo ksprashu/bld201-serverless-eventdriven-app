@@ -103,3 +103,5 @@ def check_and_update_userdata(coll_ref, user_doc):
         
             coll_ref.document(user_doc['userid']).set(user_doc)
             print(f"user {user_doc['userid']} updated")
+        else:
+            print(f"user {user_doc['userid']} - nothing to do")
