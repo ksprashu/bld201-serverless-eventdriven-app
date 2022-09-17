@@ -59,10 +59,11 @@ def store_usernames(bucket_name, filename):
     print("Updating user entries in firestore")
 
     # usernames will be a map of id: username
-    for userid, username in usernames.items():
+    for userid, username, profile_image_url in usernames.items():
         collection_ref.document(str(userid)).set({
             u'userid': userid,
-            u'username': username
+            u'username': username,
+            u'profile_image_url': profile_image_url
         })
 
     print("User data updated")
