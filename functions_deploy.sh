@@ -8,7 +8,7 @@ gcloud functions deploy store-usernames \
 --runtime=python310 \
 --region=us-west1 \
 --source=functions/store-usernames/python/. \
---entry-point="event_receiver"
+--entry-point="event_receiver" &
 
 # store-scores function
 echo "deploying store-usernames function"
@@ -18,4 +18,4 @@ gcloud functions deploy store-scores \
 --runtime=python310 \
 --region=us-west1 \
 --source=functions/store-scores/python/. \
---entry-point="event_receiver"
+--entry-point="event_receiver" &
