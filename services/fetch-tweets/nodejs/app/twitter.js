@@ -169,7 +169,11 @@ function _filterRelevantTweets(tweets) {
 function _getUsersAsMap(users) {
     let usernames = {};
     for(let user of users) {
-        usernames[user.id] = user.username;
+        usernames[user.id] = {
+            'username': user.username,
+            'name': user.name,
+            'profile_image_url': user.profile_image_url
+        }
     }
 
     console.log(`Coverted ${Object.keys(usernames).length} usernames to map`);

@@ -59,11 +59,12 @@ def store_usernames(bucket_name, filename):
     print("Updating user entries in firestore")
 
     # usernames will be a map of id: username
-    for userid, username, profile_image_url in usernames.items():
+    for userid, userdata in usernames.items():
         user_doc = {
             u'userid': str(userid),
-            u'username': str(username),
-            u'profile_image_url': str(profile_image_url)
+            u'username': str(userdata.username),
+            u'name': str(userdata.name),
+            u'profile_image_url': str(userdata.profile_image_url)
         }
 
         check_and_update_userdata(collection_ref, user_doc)           
@@ -84,7 +85,9 @@ def check_and_update_userdata(coll_ref, user_doc):
     if not doc.exists or \
         doc['username'] != user_doc['username'] or \
         not hasattr(doc, u'profile_image_url') or \
-        doc['profile_image_url'] != user_doc['profile_image_url']:
+        doc['profile_image_url'] != user_doc['profile_image_url'] or \
+        not hasattr(doc, u'name') or \
+        doc['name'] != user_doc['name']:
         
         coll_ref.document(user_doc['userid']).set(user_doc)
         print(f"user {user_doc['userid']} created or updated")
