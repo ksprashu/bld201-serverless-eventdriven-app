@@ -82,12 +82,16 @@ def check_and_update_userdata(coll_ref, user_doc):
     """
 
     doc = coll_ref.document(user_doc['userid']).get()
-    if not doc.exists or \
-        doc['username'] != user_doc['username'] or \
-        not hasattr(doc, u'profile_image_url') or \
-        doc['profile_image_url'] != user_doc['profile_image_url'] or \
-        not hasattr(doc, u'name') or \
-        doc['name'] != user_doc['name']:
-        
+    if not doc.exists:
         coll_ref.document(user_doc['userid']).set(user_doc)
-        print(f"user {user_doc['userid']} created or updated")
+        print(f"user {user_doc['userid']} created")
+    else:
+        doc = doc.to_dict()
+        if doc['username'] != user_doc['username'] or \
+            not hasattr(doc, u'profile_image_url') or \
+            doc['profile_image_url'] != user_doc['profile_image_url'] or \
+            not hasattr(doc, u'name') or \
+            doc['name'] != user_doc['name']:
+        
+            coll_ref.document(user_doc['userid']).set(user_doc)
+            print(f"user {user_doc['userid']} updated")

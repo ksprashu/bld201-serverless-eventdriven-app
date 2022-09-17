@@ -120,9 +120,9 @@ def write_or_update_score(coll_ref, score_doc):
         # update the scores for this record
         print(f"Score exists for author {score_doc['userid']} \
             for round {score_doc['roundid']}")
-        old_score_doc = score_docs[0]
-        coll_ref.document(old_score_doc.id).set(score_doc)
-        print(f"Updated existing entry with id {old_score_doc.id}")
+        old_score_doc = score_docs.to_dict()[0]
+        coll_ref.document(old_score_doc['id']).set(score_doc)
+        print(f"Updated existing entry with id {old_score_doc['id']}")
 
 
 def calculate_score(attempts):
