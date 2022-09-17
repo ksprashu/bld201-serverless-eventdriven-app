@@ -33,7 +33,7 @@ async function getWordleTweets(newestId) {
     let response = {};
     let data = await _fetchAllTweets(newestId);
 
-    if (data.tweets.length > 0) {
+    if (data && 'tweets' in data && data.tweets.length > 0) {
         response['tweets'] = _filterRelevantTweets(data.tweets);
         response['users'] = _getUsersAsMap(data.users);
         response['meta'] = data.meta;
@@ -79,7 +79,7 @@ async function _fetchAllTweets(sinceId = null) {
         }
     } catch (error) {
         console.warn('Exiting batch process');
-        console.log(error);
+        console.log(error.response.data);
         return data;
     }
     
@@ -99,7 +99,7 @@ async function _searchRecentTweets(bearerToken, sinceId = null, nextToken = null
     let params = {
         'query': SEARCH_TERM,
         'expansions': 'author_id',
-        'user.fields': encodeURIComponent('username,profile_image_url,name'),
+        'user.fields': 'username,profile_image_url,name',
         'sort_order': 'recency',
         'max_results': process.env.TWITTER_API_MAX_RESULTS
     };
