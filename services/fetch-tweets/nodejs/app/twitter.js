@@ -16,7 +16,6 @@ const TWITTER_V2_API = 'https://api.twitter.com/2';
 const RECENT_TWEETS = '/tweets/search/recent';
 const SEARCH_TERM = 'wordle -is:retweet'
 
-const assert = require('node:assert');
 const secret = require('./secret');
 const axios = require('axios').default;
 const client = axios.create({
@@ -100,7 +99,7 @@ async function _searchRecentTweets(bearerToken, sinceId = null, nextToken = null
     let params = {
         'query': SEARCH_TERM,
         'expansions': 'author_id',
-        'user.fields': 'username, profile_image_url',
+        'user.fields': encodeURIComponent('username,profile_image_url,name'),
         'sort_order': 'recency',
         'max_results': process.env.TWITTER_API_MAX_RESULTS
     };
