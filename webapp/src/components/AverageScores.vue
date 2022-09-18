@@ -24,7 +24,7 @@
         </q-item-section>
 
         <q-item-section side>
-          <q-chip size="md" round color="primary" text-color="white">
+          <q-chip size="lg" round color="primary" text-color="white">
             {{ score.score }}
           </q-chip>
         </q-item-section>
