@@ -18,8 +18,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn global add @quasar/cli
 RUN yarn
-RUN yarn quasar build
 COPY . .
+RUN yarn quasar build
 
 # build stage
 # FROM develop-stage as build-stage
