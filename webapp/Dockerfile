@@ -19,7 +19,7 @@ COPY package*.json ./
 RUN yarn global add @quasar/cli
 RUN yarn
 COPY . .
-RUN yarn quasar build
+RUN quasar build
 
 # build stage
 # FROM develop-stage as build-stage
@@ -31,4 +31,4 @@ FROM node:18 as production-stage
 WORKDIR /app
 COPY --from=build-stage /app/dist/spa .
 RUN yarn global add @quasar/cli
-CMD ["yarn", "quasar", "serve"]
+CMD ["quasar", "serve"]
