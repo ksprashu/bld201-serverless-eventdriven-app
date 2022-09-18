@@ -155,7 +155,7 @@ def write_and_update_score(db, score_doc):
 
             average_score = user_doc.get('average_score', 0)
             average_score = (average_score * rounds_played + current_score) \
-                / rounds_played + 1
+                / (rounds_played + 1)
             user_doc[u'average_score'] = average_score
 
             total_score = user_doc.get('total_score', 0)
