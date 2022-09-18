@@ -13,8 +13,8 @@
 // limitations under the License.
 
 const {Firestore} = require('@google-cloud/firestore');
-const METADATA_COLLECTION = 'fetch_metadata';
-const LATEST_DOCID = 'latest';
+const METADATA_COLLECTION = 'metadata';
+const FETCH_DOCID = 'fetch';
 
 /**
 * Get the most recently fetched tweet id from firestore
@@ -24,7 +24,7 @@ async function getMostRecentTweetId() {
     console.log('Fetching latest tweet id');
     
     const firestore = new Firestore();
-    const collectionRef = firestore.collection(METADATA_COLLECTION).doc(LATEST_DOCID);
+    const collectionRef = firestore.collection(METADATA_COLLECTION).doc(FETCH_DOCID);
     const doc = await collectionRef.get();
     
     if (!doc.exists || !(doc.get('newestId'))) {
@@ -54,7 +54,7 @@ async function updateMostRecentTweetId(metadata) {
         // create a doc with 'timestamp' for recording history
         // await firestore.collection(METADATA_COLLECTION).doc(data.timestamp.toString()).set(data);
         // create a document called 'latest' for faster fetch
-        await firestore.collection(METADATA_COLLECTION).doc(LATEST_DOCID).set(data);       
+        await firestore.collection(METADATA_COLLECTION).doc(FETCH_DOCID).set(data);       
         console.log('Saved tweet metadata');
     } catch (error) {
         console.warn(`Data save failed with error ${error.message}`);
