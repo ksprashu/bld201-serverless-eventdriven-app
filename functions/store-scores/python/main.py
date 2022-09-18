@@ -90,7 +90,6 @@ def store_scores(bucket_name, filename):
                 latest_round = roundid
 
             write_and_update_score(db, score_doc)
-            update_round_metadata(db, latest_round)
 
         except ValueError as e:
             print(e)
@@ -98,6 +97,7 @@ def store_scores(bucket_name, filename):
             print(f"Encountered error {e}")
 
     print("Saved scores to Firestore")
+    update_round_metadata(db, latest_round)
 
 
 def update_round_metadata(db, latest_round): 
