@@ -23,7 +23,7 @@ from google.cloud import firestore
 METADATA_COLLECTION = u'metadata'
 SCORE_COLLECTION = u'scores'
 USER_COLLECTION = u'users'
-SCORE_DOCID = u'rounds'
+ROUND_DOCID = u'rounds'
 
 @functions_framework.cloud_event
 def event_receiver(cloud_event):
@@ -61,7 +61,7 @@ def store_scores(bucket_name, filename):
     # initialize firestore client
     db = firestore.Client()    
 
-    scored_rounds = set()
+    latest_round = 0
     print("Calculating and saving scores")
     
     # each entry will have a tweetId, authorId, and tweet
@@ -85,8 +85,9 @@ def store_scores(bucket_name, filename):
                 u'tweetid': tweetid
             }
 
-            if roundid not in scored_rounds:
-                scored_rounds.add(roundid)
+            # keep track of the latest round
+            if roundid > latest_round:
+                latest_round = roundid
 
             write_and_update_score(db, score_doc)
 
@@ -96,8 +97,30 @@ def store_scores(bucket_name, filename):
             print(f"Encountered error {e}")
 
     print("Saved scores to Firestore")
-    print("Updated round metadata")
-   
+
+
+def update_round_metadata(db, latest_round): 
+    """
+    Updates the metadata with latest round scored
+
+    Parameters:
+        db (Object): An instance of the Firestore client
+        latest_round (int): Value of the latest round fetched
+    """
+    round_ref = db.collection(METADATA_COLLECTION).document(ROUND_DOCID)
+    round_doc = round_ref.get()
+    if round_doc.exists:
+        current_latest = round_doc.get(u'latest_round')
+        if latest_round > current_latest:
+            round_ref.set({
+                u'latest_round': latest_round
+            }, merge=True)
+    else:
+        round_ref.set({
+            u'latest_round': latest_round
+        })
+    print(f'latest round updated to {latest_round}')
+
 
 def write_and_update_score(db, score_doc):
     """
@@ -121,7 +144,7 @@ def write_and_update_score(db, score_doc):
         print(f"Wrote new entry for author = {score_doc['userid']} \
             for round {score_doc['roundid']}")
 
-        doc_ref = db.collection(USER_COLLECTION).doc(score_doc['userid'])
+        doc_ref = db.collection(USER_COLLECTION).document(score_doc['userid'])
         doc = doc_ref.get()
         if doc.exists:
             user_doc = doc.to_dict()
