@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # develop stage
-FROM node:13.14-alpine as develop-stage
+FROM node:18 as develop-stage
 WORKDIR /app
 COPY package*.json ./
 RUN yarn global add @quasar/cli
@@ -25,7 +25,7 @@ RUN yarn
 RUN quasar build
 
 # production stage
-FROM node:13.14-alpine as production-stage
+FROM node:18 as production-stage
 COPY --from=build-stage /app/dist/spa /app
 EXPOSE 4000
 CMD ["quasar", "serve"]
