@@ -20,6 +20,8 @@ import json
 from google.cloud import storage
 from google.cloud import firestore
 
+USER_COLLECTION = u'users'
+
 
 @functions_framework.cloud_event
 def event_receiver(cloud_event):
@@ -54,7 +56,7 @@ def store_usernames(bucket_name, filename):
 
     # initialize firestore client
     db = firestore.Client()
-    collection_ref = db.collection(u'users')
+    collection_ref = db.collection(USER_COLLECTION)
 
     print("Updating user entries in firestore")
 

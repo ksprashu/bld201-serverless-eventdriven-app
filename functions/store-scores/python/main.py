@@ -22,6 +22,9 @@ import re
 from google.cloud import storage
 from google.cloud import firestore
 
+METADATA_COLLECTION = u'metadata'
+SCORE_COLLECTION = u'wordle_scores'
+
 
 @functions_framework.cloud_event
 def event_receiver(cloud_event):
@@ -58,7 +61,7 @@ def store_scores(bucket_name, filename):
 
     # initialize firestore client
     db = firestore.Client()
-    collection_ref = db.collection(u'wordle_scores')
+    collection_ref = db.collection(SCORE_COLLECTION)
 
     print("Calculating and saving scores")
     
