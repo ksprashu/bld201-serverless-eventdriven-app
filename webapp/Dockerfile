@@ -13,19 +13,22 @@
 # limitations under the License.
 
 # develop stage
-FROM node:18 as develop-stage
+FROM node:18 as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN yarn global add @quasar/cli
+RUN yarn
+RUN quasar build
 COPY . .
 
 # build stage
-FROM develop-stage as build-stage
-RUN yarn
-RUN quasar build
+# FROM develop-stage as build-stage
+# RUN yarn
+# RUN quasar build
 
 # production stage
 FROM node:18 as production-stage
-COPY --from=build-stage /app/dist/spa /app
-EXPOSE 4000
+WORKDIR /app
+COPY --from=build-stage /app/dist/spa .
+RUN yarn global add @quasar/cli
 CMD ["quasar", "serve"]
