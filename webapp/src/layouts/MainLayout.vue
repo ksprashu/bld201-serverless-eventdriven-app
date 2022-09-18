@@ -1,28 +1,26 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated  class="bg-primary text-white" height-hint="98">
       <q-toolbar>
-        <q-toolbar-title class="absolute-center">
+        <q-avatar square icon="assessment" font-size="36px">
+
+        </q-avatar>
+        <q-toolbar-title>
           Leaderboard App
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-      <LeaderBoard></LeaderBoard>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import LeaderBoard from 'components/LeaderBoard.vue'
 
 export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    LeaderBoard
-  }
+  name: 'MainLayout'
 })
 </script>

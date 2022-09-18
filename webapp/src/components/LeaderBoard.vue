@@ -9,22 +9,16 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="overall" label="Top Overall" />
-      <q-tab name="average" label="Top Average" />
+      <q-tab name="average" label="Top Average Scores" />
       <q-tab name="round" label="Per Round Scores" />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="overall">
-        <OverallTab />
-      </q-tab-panel>
-
       <q-tab-panel name="average">
         <AverageTab />
       </q-tab-panel>
-
       <q-tab-panel name="round">
         <RoundTab />
       </q-tab-panel>
@@ -35,19 +29,17 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import AverageTab from './AverageTab.vue'
-import OverallTab from './OverallTab.vue'
 import RoundTab from './RoundTab.vue'
 
 export default defineComponent({
   name: 'LeaderBoard',
   components: {
     AverageTab,
-    OverallTab,
     RoundTab
   },
   setup () {
     return {
-      tab: ref('overall')
+      tab: ref('average')
     }
   }
 })

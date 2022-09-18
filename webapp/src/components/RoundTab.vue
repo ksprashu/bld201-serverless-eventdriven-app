@@ -1,18 +1,17 @@
 <template>
-  <div style="max-width: 350px">
-    <div class="q-pa-md" style="max-width: 350px">
-      <RoundScores
-        v-for="score in roundScores"
-        :key="score.userid"
-        v-bind="score"/>
-    </div>
-  </div>
+  <Suspense>
+    <RoundAttempts />
+  </Suspense>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import RoundAttempts from './RoundAttempts.vue'
 
 export default defineComponent({
-  name: 'RoundTab'
+  name: 'RoundTab',
+  components: {
+    RoundAttempts
+  }
 })
 </script>
