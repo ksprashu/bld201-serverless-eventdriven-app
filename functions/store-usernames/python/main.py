@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from heapq import merge
 import functions_framework
 import json
 
@@ -84,7 +85,7 @@ def store_usernames(bucket_name, filename):
 
 def check_and_update_userdata(coll_ref, user_doc):
     """
-    Checks whether the user data need to be updated and inserts / updates.
+    Checks whether the user data need to be updated or created.
 
     Parameters:
         coll_ref (Object): Reference to users collection
@@ -103,7 +104,7 @@ def check_and_update_userdata(coll_ref, user_doc):
             not hasattr(doc, u'name') or \
             doc['name'] != user_doc['name']:
         
-            coll_ref.document(user_doc['userid']).set(user_doc)
+            coll_ref.document(user_doc['userid']).set(user_doc, merge=True)
             print(f"user {user_doc['userid']} updated")
         else:
             print(f"user {user_doc['userid']} - nothing to do")
