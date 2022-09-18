@@ -12,9 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Use the official lightweight Node.js 12 image.
-# https://hub.docker.com/_/node
-FROM node:18-slim
-
-WORKDIR /usr/src/app
+# develop stage
+FROM node:13.14-alpine as develop-stage
+WORKDIR /app
 COPY package*.json ./
+RUN yarn global add @quasar/cli
+COPY . .
+
+# build stage
+FROM develop-stage as build-stage
+RUN yarn
+RUN quasar build
+
+# production stage
+FROM node:13.14-alpine as production-stage
+COPY --from=build-stage /app/dist/spa /app
+EXPOSE 4000
+CMD ["quasar", "serve"]
