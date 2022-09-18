@@ -29,8 +29,9 @@ async function fetchTweetsAndSave() {
     let newestId = await firestore.getMostRecentTweetId();
     let response = await twitter.getWordleTweets(newestId);
     if (response) {
-        await storage.saveTweets(response.tweets);
+        // save the users first so that it can be processed, then tweets
         await storage.saveUsers(response.users);
+        await storage.saveTweets(response.tweets);
         await firestore.updateMostRecentTweetId(response.meta);
     }
     console.log('Run complete');
