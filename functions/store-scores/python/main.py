@@ -14,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ast import Raise
 import functions_framework
 import json
-import re
 
 from google.cloud import storage
 from google.cloud import firestore
 
 METADATA_COLLECTION = u'metadata'
-SCORE_COLLECTION = u'wordle_scores'
-
+SCORE_COLLECTION = u'scores'
+USER_COLLECTION = u'users'
+SCORE_DOCID = u'rounds'
 
 @functions_framework.cloud_event
 def event_receiver(cloud_event):
@@ -60,9 +59,9 @@ def store_scores(bucket_name, filename):
     tweets = json.loads(blob.download_as_bytes())
 
     # initialize firestore client
-    db = firestore.Client()
-    collection_ref = db.collection(SCORE_COLLECTION)
+    db = firestore.Client()    
 
+    scored_rounds = set()
     print("Calculating and saving scores")
     
     # each entry will have a tweetId, authorId, and tweet
@@ -75,16 +74,21 @@ def store_scores(bucket_name, filename):
         terms = tweet.split(' ')
 
         try:
-            roundid = terms[1]
+            roundid = int(terms[1])
             attempts = terms[2].split('/')[1]
             score = calculate_score(attempts)
             score_doc = {
                 u'roundid': roundid,
                 u'userid': userid,
                 u'score': score,
+                u'attempts': attempts,
                 u'tweetid': tweetid
             }
-            write_or_update_score(collection_ref, score_doc)
+
+            if roundid not in scored_rounds:
+                scored_rounds.add(roundid)
+
+            write_and_update_score(db, score_doc)
 
         except ValueError as e:
             print(e)
@@ -92,40 +96,69 @@ def store_scores(bucket_name, filename):
             print(f"Encountered error {e}")
 
     print("Saved scores to Firestore")
+    print("Updated round metadata")
+   
 
-
-def write_or_update_score(coll_ref, score_doc):
+def write_and_update_score(db, score_doc):
     """
-    Update the user's score for the given round if already present, or 
-    create a new score entry for a new round. A user should have only 1 score
-    per round. We will default to the lowest score (highest attempts).
+    If the user's score is already present, then ignore the new score / tweet.
+    When writing a new score, then update the users average. 
 
     Parameters:
-        coll_ref (Object): An instance of the score collection in Firestore
+        db (Object): An instance of the Firestore client
         score_doc (Object): A dictionary of score, roundid, userid, tweetid
 
     Return:
         Boolean indicating success or failure 
     """
 
-    score_docs = coll_ref.where(u'roundid', u'==', score_doc['roundid']) \
+    score_coll_ref = db.collection(SCORE_COLLECTION)
+    score_docs = score_coll_ref.where(u'roundid', u'==', score_doc['roundid']) \
         .where(u'userid', u'==', score_doc['userid']).get()
 
     if len(score_docs) == 0:
-        coll_ref.add(score_doc)
+        score_coll_ref.add(score_doc)
         print(f"Wrote new entry for author = {score_doc['userid']} \
             for round {score_doc['roundid']}")
-    elif len(score_docs) > 1:
-        raise ValueError(f'Found {len(score_docs)} entries \
-            for round - {score_doc["roundid"]} \
-            for player - {score_doc["userid"]}')
-    else:
-        # update the scores for this record
-        print(f"Score exists for author {score_doc['userid']} \
-            for round {score_doc['roundid']}")
-        old_score_doc = score_docs.to_dict()[0]
-        coll_ref.document(old_score_doc['id']).set(score_doc)
-        print(f"Updated existing entry with id {old_score_doc['id']}")
+
+        doc_ref = db.collection(USER_COLLECTION).doc(score_doc['userid'])
+        doc = doc_ref.get()
+        if doc.exists:
+            user_doc = doc.to_dict()
+            current_score = score_doc['score']
+            
+            rounds_played = user_doc.get('rounds_played', 0)
+            user_doc[u'rounds_played'] = rounds_played + 1
+
+            average_score = user_doc.get('average_score', 0)
+            average_score = (average_score * rounds_played + current_score) \
+                / rounds_played + 1
+            user_doc[u'average_score'] = average_score
+
+            total_score = user_doc.get('total_score', 0)
+            user_doc[u'total_score'] = total_score + current_score
+            
+            current_streak = user_doc.get('current_streak', 0)
+            current_streak = current_streak + 1 if current_score > 0 else 1
+            user_doc[u'current_streak'] = current_streak
+
+            max_streak = user_doc.get('max_streak', 0)
+            user_doc[u'max_streak'] = max(max_streak, current_streak)
+
+            doc_ref.set(user_doc, merge=True)
+            print(f"Updated user {score_doc['userid']}")
+
+        else:
+            user_doc = {
+                u'userid': score_doc['userid'],
+                u'rounds_played': 1,
+                u'average_score': score_doc['score'],
+                u'total_score': score_doc['score'],
+                u'max_streak': 1,
+                u'current_streak': 1
+            }
+            doc_ref.set(user_doc)
+            print(f"Created user {score_doc['userid']}")
 
 
 def calculate_score(attempts):
