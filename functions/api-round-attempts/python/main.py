@@ -102,8 +102,8 @@ def fetch_per_round_best_attempt():
                     u'best_attempt': best_attempt,
                     u'user_count': best_attempt_count
                 })
-                print(f"Best attempt = {best_attempt} for round {roundid} with \
-                    {best_attempt_count} attempts")
+                print(f"Best attempt = {best_attempt} for round {roundid}" + 
+                        f" with {best_attempt_count} attempts")
 
         return {
             "data": data,
