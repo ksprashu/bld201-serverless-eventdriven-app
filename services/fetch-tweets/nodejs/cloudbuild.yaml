@@ -1,18 +1,18 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets', 'services/fetch-tweets/nodejs/.']
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets', 'services/fetch-tweets/nodejs/.']
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets']
+  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets']
 # Deploy container image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args: ['run', 'deploy', 'fetch-tweets', 
-    '--image', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets', 
+    '--image', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets', 
     '--region', 'us-west1', 
-    '--set-env-vars', 'TWITTER_API_MAX_RESULTS=25', 
-    '--set-env-vars', 'TWITTER_API_RATE_LIMIT=2', 
+    '--set-env-vars', 'TWITTER_API_MAX_RESULTS=100', 
+    '--set-env-vars', 'TWITTER_API_RATE_LIMIT=25', 
     '--set-env-vars', 'PROJECT_ID=$PROJECT_ID']
 images:
-- us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch_tweets
+- us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets
