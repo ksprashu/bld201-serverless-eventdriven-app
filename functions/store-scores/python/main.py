@@ -73,7 +73,7 @@ def store_scores(bucket_name, filename):
 
         try:
             roundid = int(terms[1])
-            attempts = terms[2].split('/')[1]
+            attempts = terms[2].split('/')[0]
             score = calculate_score(attempts)
             score_doc = {
                 u'roundid': roundid,
