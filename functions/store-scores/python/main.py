@@ -79,7 +79,7 @@ def store_scores(bucket_name, filename):
                 u'roundid': roundid,
                 u'userid': userid,
                 u'score': score,
-                u'attempts': attempts,
+                u'attempts': int(attempts) if attempts.isdigit() else None,
                 u'tweetid': tweetid
             }
 
