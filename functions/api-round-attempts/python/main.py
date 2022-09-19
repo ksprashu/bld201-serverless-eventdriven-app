@@ -85,11 +85,11 @@ def fetch_per_round_best_attempt():
                 .order_by(u'attempts') \
                 .limit(1) \
                 .get()
-            
+
             if len(least_attempt_doc) == 0:
                 print(f"No attempts for round {roundid}!!!")
             else:
-                best_attempt = least_attempt_doc[0]['attempts']
+                best_attempt = least_attempt_doc[0].get('attempts')
                 best_attempt_count = 0
                 attempts_docs = score_ref \
                     .where(u'roundid', u'==', roundid) \
@@ -97,12 +97,13 @@ def fetch_per_round_best_attempt():
                     .stream()
                 best_attempt_count = len(list(attempts_docs))
 
-            data.append({
-                u'roundid': roundid,
-                u'best_attempt': best_attempt,
-                u'user_count': best_attempt_count
-            })
-            print(f"Best attempt = {best_attempt} for round {roundid}")
+                data.append({
+                    u'roundid': roundid,
+                    u'best_attempt': best_attempt,
+                    u'user_count': best_attempt_count
+                })
+                print(f"Best attempt = {best_attempt} for round {roundid} with \
+                    {best_attempt_count} attempts")
 
         return {
             "data": data,
