@@ -18,6 +18,11 @@ import functions_framework
 from google.cloud import firestore
 from flask import jsonify
 
+METADATA_COLLECTION = u'metadata'
+SCORE_COLLECTION = u'scores'
+USER_COLLECTION = u'users'
+ROUND_DOCID = u'rounds'
+
 @functions_framework.http
 def http_receiver(request):
     """
@@ -60,6 +65,57 @@ def fetch_per_round_best_attempt():
     Ordered by latest round first.
     """
 
+    # initialize firestore client
+    db = firestore.Client()
+    round_ref = db.collection(METADATA_COLLECTION).document(ROUND_DOCID)
+    round_doc = round_ref.get()
+
+    if not round_doc.exists:
+        return get_canned_response()
+
+    try:
+        data = []
+        score_ref = db.collection(SCORE_COLLECTION)
+        latest_round = round_doc.get('latest_round')
+        for roundid in range(latest_round, latest_round - 20, -1):
+            least_attempt_doc = score_ref \
+                .where(u'roundid', u'==', roundid) \
+                .where(u'attempts', u'>', 0) \
+                .order_by(u'attempts') \
+                .limit(1) \
+                .get()
+            
+            best_attempt = least_attempt_doc['attempts']
+            best_attempt_count = 0
+            if len(least_attempt_doc) != 1:
+                print(f"No attempts for round {roundid}!!!")
+            else:
+                attempts_docs = score_ref \
+                    .where(u'roundid', u'==', roundid) \
+                    .where(u'attempts', u'==', best_attempt) \
+                    .stream()
+                best_attempt_count = len(list(attempts_docs))
+
+            data.append({
+                u'roundid': roundid,
+                u'best_attempt': best_attempt,
+                u'user_count': best_attempt_count
+            })
+            print(f"Best attempt = {best_attempt} for round {roundid}")
+
+        return {
+            "data": data,
+            "count": len(data)
+        }
+    except Exception as e:
+        print(f"Encountered error {e}")
+        return get_canned_response()
+
+
+def get_canned_response():
+    """
+    Static json for respose format and as a backup.
+    """
     response = {
         "data": [
             {
