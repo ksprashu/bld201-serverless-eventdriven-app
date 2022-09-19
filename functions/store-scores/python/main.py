@@ -79,7 +79,7 @@ def store_scores(bucket_name, filename):
                 u'roundid': roundid,
                 u'userid': userid,
                 u'score': score,
-                u'attempts': int(attempts) if attempts.isdigit() else None,
+                u'attempts': int(attempts) if attempts.isdigit() else 0,
                 u'tweetid': tweetid
             }
 
@@ -170,8 +170,16 @@ def update_user_stats(db, score_doc):
         total_score = user_doc.get('total_score', 0)
         user_doc[u'total_score'] = total_score + current_score
         
+        last_round = user_doc.get('last_round', 0)
+        user_doc[u'last_round'] = score_doc['roundid']
+
+        # streak if contiguous games played and score is > 0
+        # if current game was not successful then streak is lost
         current_streak = user_doc.get('current_streak', 0)
-        current_streak = current_streak + 1 if current_score > 0 else 1
+        if last_round == score_doc['roundid'] - 1 and current_score > 0:
+            current_streak = current_streak + 1
+        else:
+            current_streak = 1 if current_score > 0 else 0
         user_doc[u'current_streak'] = current_streak
 
         max_streak = user_doc.get('max_streak', 0)
@@ -184,6 +192,7 @@ def update_user_stats(db, score_doc):
         user_doc = {
             u'userid': score_doc['userid'],
             u'rounds_played': 1,
+            u'last_round': score_doc['roundid'],
             u'average_score': score_doc['score'],
             u'total_score': score_doc['score'],
             u'max_streak': 1,
