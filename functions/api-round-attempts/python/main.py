@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import functions_framework
+import traceback
 from google.cloud import firestore
 from flask import jsonify
 
@@ -109,6 +110,7 @@ def fetch_per_round_best_attempt():
         }
     except Exception as e:
         print(f"Encountered error {e}")
+        traceback.print_exc()
         return get_canned_response()
 
 
