@@ -86,11 +86,11 @@ def fetch_per_round_best_attempt():
                 .limit(1) \
                 .get()
             
-            best_attempt = least_attempt_doc['attempts']
-            best_attempt_count = 0
-            if len(least_attempt_doc) != 1:
+            if len(least_attempt_doc) == 0:
                 print(f"No attempts for round {roundid}!!!")
             else:
+                best_attempt = least_attempt_doc[0]['attempts']
+                best_attempt_count = 0
                 attempts_docs = score_ref \
                     .where(u'roundid', u'==', roundid) \
                     .where(u'attempts', u'==', best_attempt) \
