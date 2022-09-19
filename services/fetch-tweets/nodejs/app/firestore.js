@@ -39,14 +39,15 @@ async function getMostRecentTweetId() {
 /**
 * Update the latest fetch data and fetch history
 * @param {Map} metadata Map of latest fetched tweet id, and result count
+* @param {int} timestamp Timestamp when this run was processed
 */
-async function updateMostRecentTweetId(metadata) {
+async function updateMostRecentTweetId(metadata, timestamp) {
     console.log('Saving latest tweet id');
     
     const firestore = new Firestore();
     const data = {
         'newestId': metadata.newestId,
-        'timestamp': Date.now(),
+        'timestamp': timestamp,
         'resultCount': metadata.resultCount
     };
     

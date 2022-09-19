@@ -22,10 +22,10 @@ const USER_FILE_PREFIX = 'users';
 * Save the list of tweets in a storage bucket
 * @param {*} tweets 
 */
-async function saveTweets(tweets) {
+async function saveTweets(tweets, timestamp) {
     console.log('Saving tweets');
     try {
-        let filename = [TWEET_FILE_PREFIX, Date.now().toString()].join('-');
+        let filename = [TWEET_FILE_PREFIX, timestamp.toString()].join('-');
         filename += '.json';
         let bucketname = [process.env['PROJECT_ID'], TWEET_FILE_PREFIX].join('_');
         let data = JSON.stringify(tweets);
@@ -40,10 +40,10 @@ async function saveTweets(tweets) {
 * Save the list of users in a storage bucket
 * @param {*} users 
 */
-async function saveUsers(users) {
+async function saveUsers(users, timestamp) {
     console.log('Saving users');
     try {
-        let filename = [USER_FILE_PREFIX, Date.now().toString()].join('-');
+        let filename = [USER_FILE_PREFIX, timestamp.toString()].join('-');
         filename += '.json';
         let bucketname = [process.env['PROJECT_ID'], USER_FILE_PREFIX].join('_');
         let data = JSON.stringify(users);
