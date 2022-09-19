@@ -33,7 +33,6 @@ def event_receiver(cloud_event):
     Parameters:
         cloud_event (Object): Object passed into the event handler
     """
-
     print(f"Received event with ID: {cloud_event['id']}")
     data = cloud_event.data
     filename = data["name"]
@@ -49,7 +48,6 @@ def store_scores(bucket_name, filename):
         bucket_name (str): Name of the bucket in which the object is created
         filename (str): Name of the file object
     """
-
     print("Initializing clients to save scores")
 
     # initialize cloud storage client
@@ -135,7 +133,6 @@ def write_and_update_score(db, score_doc):
     Return:
         Boolean indicating success or failure 
     """
-
     score_coll_ref = db.collection(SCORE_COLLECTION)
     score_docs = score_coll_ref.where(u'roundid', u'==', score_doc['roundid']) \
         .where(u'userid', u'==', score_doc['userid']).get()
@@ -145,44 +142,55 @@ def write_and_update_score(db, score_doc):
         print(f"Wrote new entry for author = {score_doc['userid']} \
             for round {score_doc['roundid']}")
 
-        doc_ref = db.collection(USER_COLLECTION).document(score_doc['userid'])
-        doc = doc_ref.get()
-        if doc.exists:
-            user_doc = doc.to_dict()
-            current_score = score_doc['score']
-            
-            rounds_played = user_doc.get('rounds_played', 0)
-            user_doc[u'rounds_played'] = rounds_played + 1
+        update_user_stats(db, score_doc)
+    
 
-            average_score = user_doc.get('average_score', 0)
-            average_score = (average_score * rounds_played + current_score) \
-                / (rounds_played + 1)
-            user_doc[u'average_score'] = average_score
+def update_user_stats(db, score_doc): 
+    """
+    Updates the user doc with game stats
 
-            total_score = user_doc.get('total_score', 0)
-            user_doc[u'total_score'] = total_score + current_score
-            
-            current_streak = user_doc.get('current_streak', 0)
-            current_streak = current_streak + 1 if current_score > 0 else 1
-            user_doc[u'current_streak'] = current_streak
+    Parameters:
+        db (Object): An instance of the Firestore Client
+        score_doc (Object): A dictionary of score details
+    """
+    doc_ref = db.collection(USER_COLLECTION).document(score_doc['userid'])
+    doc = doc_ref.get()
+    if doc.exists:
+        user_doc = doc.to_dict()
+        current_score = score_doc['score']
+        
+        rounds_played = user_doc.get('rounds_played', 0)
+        user_doc[u'rounds_played'] = rounds_played + 1
 
-            max_streak = user_doc.get('max_streak', 0)
-            user_doc[u'max_streak'] = max(max_streak, current_streak)
+        average_score = user_doc.get('average_score', 0)
+        average_score = (average_score * rounds_played + current_score) \
+            / (rounds_played + 1)
+        user_doc[u'average_score'] = average_score
 
-            doc_ref.set(user_doc, merge=True)
-            print(f"Updated user {score_doc['userid']}")
+        total_score = user_doc.get('total_score', 0)
+        user_doc[u'total_score'] = total_score + current_score
+        
+        current_streak = user_doc.get('current_streak', 0)
+        current_streak = current_streak + 1 if current_score > 0 else 1
+        user_doc[u'current_streak'] = current_streak
 
-        else:
-            user_doc = {
-                u'userid': score_doc['userid'],
-                u'rounds_played': 1,
-                u'average_score': score_doc['score'],
-                u'total_score': score_doc['score'],
-                u'max_streak': 1,
-                u'current_streak': 1
-            }
-            doc_ref.set(user_doc)
-            print(f"Created user {score_doc['userid']}")
+        max_streak = user_doc.get('max_streak', 0)
+        user_doc[u'max_streak'] = max(max_streak, current_streak)
+
+        doc_ref.set(user_doc, merge=True)
+        print(f"Updated user {score_doc['userid']}")
+
+    else:
+        user_doc = {
+            u'userid': score_doc['userid'],
+            u'rounds_played': 1,
+            u'average_score': score_doc['score'],
+            u'total_score': score_doc['score'],
+            u'max_streak': 1,
+            u'current_streak': 1
+        }
+        doc_ref.set(user_doc)
+        print(f"Created user {score_doc['userid']}")
 
 
 def calculate_score(attempts):
@@ -200,7 +208,6 @@ def calculate_score(attempts):
     Exception:
         ValueError: when the attempts is out of bounds
     """
-
     score = 0
     if not attempts.isdigit():
         return score
