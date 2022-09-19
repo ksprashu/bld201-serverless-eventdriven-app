@@ -134,8 +134,10 @@ def write_and_update_score(db, score_doc):
         Boolean indicating success or failure 
     """
     score_coll_ref = db.collection(SCORE_COLLECTION)
-    score_docs = score_coll_ref.where(u'roundid', u'==', score_doc['roundid']) \
-        .where(u'userid', u'==', score_doc['userid']).get()
+    score_docs = score_coll_ref \
+        .where(u'roundid', u'==', score_doc['roundid']) \
+        .where(u'userid', u'==', score_doc['userid']) \
+        .get()
 
     if len(score_docs) == 0:
         score_coll_ref.add(score_doc)
