@@ -167,7 +167,7 @@ def update_user_stats(db, score_doc):
         average_score = user_doc.get('average_score', 0)
         average_score = (average_score * rounds_played + current_score) \
             / (rounds_played + 1)
-        user_doc[u'average_score'] = average_score
+        user_doc[u'average_score'] = round(average_score, 1)
 
         total_score = user_doc.get('total_score', 0)
         user_doc[u'total_score'] = total_score + current_score
