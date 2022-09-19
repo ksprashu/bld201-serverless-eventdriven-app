@@ -1,0 +1,15 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app', 'webapp/.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'leaderboard-app',
+    '--image', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app',
+    '--region', 'us-west1']
+images:
+- us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app
