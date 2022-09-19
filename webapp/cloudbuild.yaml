@@ -10,6 +10,7 @@ steps:
   entrypoint: gcloud
   args: ['run', 'deploy', 'leaderboard-app',
     '--image', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app',
-    '--region', 'us-west1']
+    '--region', 'us-west1',
+    '--allow-unauthenticated']
 images:
 - us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/leaderboard-app
