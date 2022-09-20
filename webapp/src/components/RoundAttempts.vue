@@ -19,11 +19,11 @@
         </q-item-section>
 
         <q-item-section>
-          <q-chip square color="orange" text-color="white">
-            {{ attempt.best_attempt }} attempts
+          <q-chip square color="blue" text-color="white">
+            Best: {{ attempt.best_attempt }} attempt(s)
           </q-chip>
-          <q-chip square color="cyan" text-color="white">
-            {{ attempt.user_count }} users
+          <q-chip square color="primary" text-color="white">
+            By: {{ attempt.user_count }} user(s)
           </q-chip>
         </q-item-section>
       </q-item>
