@@ -19,13 +19,11 @@
         </q-item-section>
 
         <q-item-section>
-          <q-chip square>
-            <q-avatar color="orange" text-color="white">{{ attempt.best_attempt }}</q-avatar>
-            attempts
+          <q-chip square color="orange" text-color="white">
+            {{ attempt.best_attempt }} attempts
           </q-chip>
-          <q-chip square>
-            <q-avatar color="cyan" text-color="white">{{ attempt.user_count }}</q-avatar>
-            users
+          <q-chip square color="cyan" text-color="white">
+            {{ attempt.user_count }} users
           </q-chip>
         </q-item-section>
       </q-item>
