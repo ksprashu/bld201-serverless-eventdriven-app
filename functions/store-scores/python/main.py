@@ -141,8 +141,8 @@ def write_and_update_score(db, score_doc):
 
     if len(score_docs) == 0:
         score_coll_ref.add(score_doc)
-        print(f"Wrote new entry for author = {score_doc['userid']} \
-            for round {score_doc['roundid']}")
+        print(f"Updated score for author = {score_doc['userid']}, " + 
+                "round {score_doc['roundid']}")
 
         update_user_stats(db, score_doc)
     
