@@ -24,4 +24,3 @@ export default defineComponent({
   name: 'MainLayout'
 })
 </script>
-
