@@ -70,8 +70,8 @@ def fetch_top_average_scores():
     try:
         user_docs = user_coll. \
             order_by('average_score', direction=firestore.Query.DESCENDING) \
-                .order_by('max_streak', direction=firestore.Query.DESCENDING) \
                 .order_by('total_score', direction=firestore.Query.DESCENDING) \
+                .order_by('max_streak', direction=firestore.Query.DESCENDING) \
                 .limit(10).stream()
 
         data = []
