@@ -63,14 +63,6 @@ def store_usernames(bucket_name, filename):
 
     # usernames will be a map of id: username
     for userid, userdata in usernames.items():
-        if isinstance(userdata, str):
-            userdata = {
-                u'userid': str(userid),
-                u'username': str(userdata),
-                u'name': '',
-                u'profile_image_url': ''
-            }
-
         user_doc = {
             u'userid': str(userid),
             u'username': str(userdata['username']),
@@ -97,14 +89,4 @@ def check_and_update_userdata(coll_ref, user_doc):
         coll_ref.document(user_doc['userid']).set(user_doc)
         print(f"user {user_doc['userid']} created")
     else:
-        doc = doc.to_dict()
-        if doc['username'] != user_doc['username'] or \
-            not hasattr(doc, u'profile_image_url') or \
-            doc['profile_image_url'] != user_doc['profile_image_url'] or \
-            not hasattr(doc, u'name') or \
-            doc['name'] != user_doc['name']:
-        
-            coll_ref.document(user_doc['userid']).set(user_doc, merge=True)
-            print(f"user {user_doc['userid']} updated")
-        else:
-            print(f"user {user_doc['userid']} - nothing to do")
+        coll_ref.document(user_doc['userid']).set(user_doc, merge=True)
