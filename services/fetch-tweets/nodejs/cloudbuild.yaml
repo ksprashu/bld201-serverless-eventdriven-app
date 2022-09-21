@@ -26,7 +26,7 @@ steps:
     '--image', 'us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets', 
     '--region', 'us-west1', 
     '--set-env-vars', 'TWITTER_API_MAX_RESULTS=100', 
-    '--set-env-vars', 'TWITTER_API_RATE_LIMIT=20', 
+    '--set-env-vars', 'TWITTER_API_RATE_LIMIT=5', 
     '--set-env-vars', 'PROJECT_ID=$PROJECT_ID']
 images:
 - us-docker.pkg.dev/$PROJECT_ID/gcr-artifacts/fetch-tweets
