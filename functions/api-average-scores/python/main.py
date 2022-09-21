@@ -81,7 +81,9 @@ def fetch_top_average_scores():
                 u'username': doc.get('username'), 
                 u'name': doc.get('name', ''),
                 u'profile_image_url': doc.get('profile_image_url', ''),
-                u'score': doc.get('average_score')
+                u'average_score': doc.get('average_score'),
+                u'max_streak': doc.get('max_streak'),
+                u'total_score': doc.get('total_score')
             })
             print(f"user {doc.get('username')} scored {doc.get('average_score')}")
 
@@ -105,19 +107,25 @@ def get_canned_response():
                 "username": "abc",
                 "name": "abc name", 
                 "profile_image_url": "https://cdn.quasar.dev/img/boy-avatar.png",
-                "score": 5.5
+                "average_score": 5.5,
+                "max_streak": 3,
+                "total_score": 15
             },
             {
                 "username": "def",
                 "name": "def name", 
                 "profile_image_url": "https://cdn.quasar.dev/img/boy-avatar.png",
-                "score": 4.4
+                "average_score": 4.4,
+                "max_streak": 2,
+                "total_score": 8
             },
             {
                 "username": "xyz",
                 "name": "xyz name", 
                 "profile_image_url": "https://cdn.quasar.dev/img/boy-avatar.png",
-                "score": 3.21
+                "average_score": 3.21,
+                "max_streak": 4,
+                "total_score": 12
             }
         ],
         "count": 3
