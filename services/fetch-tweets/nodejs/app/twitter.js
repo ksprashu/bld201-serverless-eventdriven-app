@@ -14,7 +14,7 @@
 
 const TWITTER_V2_API = 'https://api.twitter.com/2';
 const RECENT_TWEETS = '/tweets/search/recent';
-const SEARCH_TERM = 'wordle -ES -is:retweet -bopomofogame.com'
+const SEARCH_TERM = 'wordle -ES -is:retweet -bopomofogame.com -9101'
 
 const secret = require('./secret');
 const axios = require('axios').default;
