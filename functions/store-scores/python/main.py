@@ -114,11 +114,12 @@ def update_round_metadata(db, latest_round):
             round_ref.set({
                 u'latest_round': latest_round
             }, merge=True)
+            print(f'latest round updated to {latest_round}')
     else:
         round_ref.set({
             u'latest_round': latest_round
         })
-    print(f'latest round updated to {latest_round}')
+        print(f'latest round updated to {latest_round}')
 
 
 def write_and_update_score(db, score_doc):
