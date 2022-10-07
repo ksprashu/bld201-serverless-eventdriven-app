@@ -23,7 +23,7 @@ const client = new SecretManagerServiceClient();
 async function getTwitterBearerToken() {
   console.log('Getting secret');
   
-  const BEARER_TOKEN_NAME = 'projects/266838624898/secrets/twitter-dev-bearer-token/versions/latest';
+  const BEARER_TOKEN_NAME = ['projects', process.env['PROJECT_NUMBER'], 'secrets/twitter-dev-bearer-token/versions/latest'].join('/');
   const [secretResponse] = await client.accessSecretVersion({
     name: BEARER_TOKEN_NAME
   });
