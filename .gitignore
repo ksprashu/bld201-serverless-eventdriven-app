@@ -1,4 +1,6 @@
 node_modules/
 __pycache__/
 .env
-deploy.log
+deploy.log.DS_Store
+**/.DS_Store
+**/deploy.log
